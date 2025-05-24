@@ -39,16 +39,34 @@
       padding: 20px;
       margin-bottom: 20px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      text-align: center;
     }
     h2 {
       color: #008cba;
     }
+    .filters {
+      margin-bottom: 20px;
+    }
+    .filters button {
+      margin: 5px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      background-color: #008cba;
+      color: white;
+      cursor: pointer;
+    }
+    .filters button.active {
+      background-color: #005f7f;
+    }
     .question {
-      margin-bottom: 15px;
+      margin-bottom: 25px;
     }
     .question input {
       margin-top: 5px;
       display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
     .question button {
       margin-top: 10px;
@@ -87,27 +105,14 @@
   <main>
     <section id="practice" class="section">
       <h2>שאלות תרגול</h2>
-
-      <div class="question">
-        <label>1. Choose the correct form: "She ___ to school every day."</label>
-        <input id="q1" type="text" placeholder="write your answer here...">
-        <button onclick="checkAnswer('q1', 'goes')">בדוק</button>
-        <div id="r1" class="result"></div>
+      <div class="filters">
+        <button onclick="filterQuestions('all')" class="active">הכל</button>
+        <button onclick="filterQuestions('Present Simple')">Present Simple</button>
+        <button onclick="filterQuestions('Present Progressive')">Present Progressive</button>
+        <button onclick="filterQuestions('Present Perfect')">Present Perfect</button>
+        <button onclick="filterQuestions('Past Simple')">Past Simple</button>
       </div>
-
-      <div class="question">
-        <label>2. Fill in: "They ___ playing football now."</label>
-        <input id="q2" type="text" placeholder="write your answer here...">
-        <button onclick="checkAnswer('q2', 'are')">בדוק</button>
-        <div id="r2" class="result"></div>
-      </div>
-
-      <div class="question">
-        <label>3. Choose: "I have ___ my homework."</label>
-        <input id="q3" type="text" placeholder="write your answer here...">
-        <button onclick="checkAnswer('q3', 'done')">בדוק</button>
-        <div id="r3" class="result"></div>
-      </div>
+      <div id="questions-container"></div>
     </section>
 
     <section id="theory" class="section">
@@ -115,26 +120,100 @@
       <p><strong>Present Simple:</strong> משמש לתיאור פעולות קבועות והרגלים. לדוגמה: "He walks to school."</p>
       <p><strong>Present Progressive:</strong> משמש לתיאור פעולות שמתרחשות כעת. לדוגמה: "She is reading a book."</p>
       <p><strong>Present Perfect:</strong> מתאר פעולות שהתרחשו בעבר אך יש להן השפעה על ההווה. לדוגמה: "I have eaten breakfast."</p>
+      <p><strong>Past Simple:</strong> מתאר פעולות שהתרחשו והסתיימו בעבר. לדוגמה: "They went to the park."</p>
     </section>
   </main>
 
   <footer>
-    &copy; 2025 GrammarBoost - כל הזכויות שמורות
+    &copy; 2025 GrammarBoost -  כל הזכויות שמורות
   </footer>
 
+  <audio id="correctSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7d2bfcf175.mp3?filename=correct-2-46134.mp3"></audio>
+
   <script>
+    const questionBank = [
+      { q: 'Choose the correct form: "She ___ to school every day."', a: 'goes', cat: 'Present Simple' },
+      { q: 'Fill in: "They ___ playing football now."', a: 'are', cat: 'Present Progressive' },
+      { q: 'Choose: "I have ___ my homework."', a: 'done', cat: 'Present Perfect' },
+      { q: 'Complete: "He ___ like pizza."', a: 'doesn’t', cat: 'Present Simple' },
+      { q: 'Fill in: "We ___ a movie right now."', a: 'are watching', cat: 'Present Progressive' },
+      { q: 'Choose: "There ___ many books on the table."', a: 'are', cat: 'Present Simple' },
+      { q: 'Complete: "It usually ___ in winter."', a: 'rains', cat: 'Present Simple' },
+      { q: 'Choose: "___ you ever been to London?"', a: 'Have', cat: 'Present Perfect' },
+      { q: 'Fill in: "They ___ to school yesterday."', a: 'went', cat: 'Past Simple' },
+      { q: 'Choose: "He has ___ his leg."', a: 'broken', cat: 'Present Perfect' },
+      { q: 'Fill in: "We ___ here since morning."', a: 'have been', cat: 'Present Perfect' },
+      { q: 'Complete: "She ___ TV every evening."', a: 'watches', cat: 'Present Simple' },
+      { q: 'Choose: "I ___ to the store two hours ago."', a: 'went', cat: 'Past Simple' },
+      { q: 'Fill in: "He ___ not like to dance."', a: 'does', cat: 'Present Simple' },
+      { q: 'Complete: "They have ___ lunch already."', a: 'eaten', cat: 'Present Perfect' },
+      { q: 'Choose the correct word: "The cat ___ under the table."', a: 'is', cat: 'Present Simple' },
+      { q: 'Complete: "___ you coming to the party?"', a: 'Are', cat: 'Present Progressive' },
+      { q: 'Choose: "I ___ reading this book."', a: 'am', cat: 'Present Progressive' },
+      { q: 'Fill in: "She ___ never seen snow."', a: 'has', cat: 'Present Perfect' },
+      { q: 'Choose: "My friends ___ playing football."', a: 'are', cat: 'Present Progressive' },
+      { q: 'Complete: "We ___ finished our homework."', a: 'have', cat: 'Present Perfect' },
+      { q: 'Fill in: "They ___ watching a movie when I called."', a: 'were', cat: 'Past Simple' },
+      { q: 'Choose the correct form: "He ___ to work every day."', a: 'goes', cat: 'Present Simple' },
+      { q: 'Complete: "She ___ not speak French."', a: 'does', cat: 'Present Simple' },
+      { q: 'Choose: "I ___ going to the gym now."', a: 'am', cat: 'Present Progressive' },
+      { q: 'Fill in: "We ___ to the beach last week."', a: 'went', cat: 'Past Simple' },
+      { q: 'Choose: "He ___ finished his project."', a: 'has', cat: 'Present Perfect' },
+      { q: 'Complete: "They ___ playing tennis every weekend."', a: 'enjoy', cat: 'Present Simple' },
+      { q: 'Fill in: "I ___ happy to see you."', a: 'am', cat: 'Present Simple' },
+      { q: 'Choose: "It ___ raining outside."', a: 'is', cat: 'Present Progressive' }
+    ];
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function renderQuestions(category = 'all') {
+      const container = document.getElementById('questions-container');
+      container.innerHTML = '';
+      let questions = category === 'all' ? questionBank : questionBank.filter(q => q.cat === category);
+      shuffle(questions);
+      const selected = questions.slice(0, 10);
+
+      selected.forEach((item, index) => {
+        const qId = `q${index+1}`;
+        const rId = `r${index+1}`;
+        const div = document.createElement('div');
+        div.className = 'question';
+        div.innerHTML = `
+          <label>${index+1}. ${item.q}</label>
+          <input id="${qId}" type="text" placeholder="write your answer here...">
+          <button onclick="checkAnswer('${qId}', '${item.a}')">בדוק</button>
+          <div id="${rId}" class="result"></div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function filterQuestions(category) {
+      document.querySelectorAll('.filters button').forEach(btn => btn.classList.remove('active'));
+      const button = Array.from(document.querySelectorAll('.filters button')).find(btn => btn.textContent === category || (category === 'all' && btn.textContent === 'הכל'));
+      if (button) button.classList.add('active');
+      renderQuestions(category);
+    }
+
     function checkAnswer(inputId, correctAnswer) {
       const userAnswer = document.getElementById(inputId).value.trim().toLowerCase();
-      const resultDiv = document.getElementById('r' + inputId.slice(-1));
-
+      const resultDiv = document.getElementById('r' + inputId.slice(1));
       if (userAnswer === correctAnswer.toLowerCase()) {
         resultDiv.style.color = 'green';
         resultDiv.textContent = 'תשובה נכונה!';
+        document.getElementById('correctSound').play();
       } else {
         resultDiv.style.color = 'red';
         resultDiv.textContent = 'לא נכון. התשובה הנכונה היא: ' + correctAnswer;
       }
     }
+
+    window.onload = () => renderQuestions();
   </script>
 </body>
 </html>
