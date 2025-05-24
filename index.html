@@ -90,6 +90,19 @@
       width: 100%;
       bottom: 0;
     }
+    .button-container {
+      margin-top: 30px;
+      text-align: center;
+    }
+    .button-container button {
+      margin: 0 10px;
+      padding: 10px 20px;
+      background-color: #005f7f;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -113,6 +126,10 @@
         <button onclick="filterQuestions('Past Simple')">Past Simple</button>
       </div>
       <div id="questions-container"></div>
+      <div class="button-container">
+        <button onclick="renderQuestions(currentCategory)">רענן שאלות</button>
+        <button onclick="clearAnswers()">אפס תשובות</button>
+      </div>
     </section>
 
     <section id="theory" class="section">
@@ -164,6 +181,8 @@
       { q: 'Choose: "It ___ raining outside."', a: 'is', cat: 'Present Progressive' }
     ];
 
+    let currentCategory = 'all';
+
     function shuffle(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -172,6 +191,7 @@
     }
 
     function renderQuestions(category = 'all') {
+      currentCategory = category;
       const container = document.getElementById('questions-container');
       container.innerHTML = '';
       let questions = category === 'all' ? questionBank : questionBank.filter(q => q.cat === category);
@@ -211,6 +231,13 @@
         resultDiv.style.color = 'red';
         resultDiv.textContent = 'לא נכון. התשובה הנכונה היא: ' + correctAnswer;
       }
+    }
+
+    function clearAnswers() {
+      const inputs = document.querySelectorAll('.question input');
+      const results = document.querySelectorAll('.question .result');
+      inputs.forEach(input => input.value = '');
+      results.forEach(result => result.textContent = '');
     }
 
     window.onload = () => renderQuestions();
