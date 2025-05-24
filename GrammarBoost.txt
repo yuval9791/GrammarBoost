@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GrammarBoost - תרגול דקדוק באנגלית</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      background: #f0f8ff;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #008cba;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    nav {
+      background-color: #e7f3f9;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    nav a {
+      color: #008cba;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    main {
+      padding: 20px;
+    }
+    .section {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #008cba;
+    }
+    .question {
+      margin-bottom: 15px;
+    }
+    .question input {
+      margin-top: 5px;
+      display: block;
+    }
+    .question button {
+      margin-top: 10px;
+      background-color: #008cba;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 5px;
+      font-weight: bold;
+    }
+    footer {
+      background-color: #008cba;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      width: 100%;
+      bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>GrammarBoost - תרגול דקדוק באנגלית</h1>
+  </header>
+
+  <nav>
+    <a href="#practice">תרגול</a>
+    <a href="#theory">הסברים</a>
+  </nav>
+
+  <main>
+    <section id="practice" class="section">
+      <h2>שאלות תרגול</h2>
+
+      <div class="question">
+        <label>1. Choose the correct form: "She ___ to school every day."</label>
+        <input id="q1" type="text" placeholder="write your answer here...">
+        <button onclick="checkAnswer('q1', 'goes')">בדוק</button>
+        <div id="r1" class="result"></div>
+      </div>
+
+      <div class="question">
+        <label>2. Fill in: "They ___ playing football now."</label>
+        <input id="q2" type="text" placeholder="write your answer here...">
+        <button onclick="checkAnswer('q2', 'are')">בדוק</button>
+        <div id="r2" class="result"></div>
+      </div>
+
+      <div class="question">
+        <label>3. Choose: "I have ___ my homework."</label>
+        <input id="q3" type="text" placeholder="write your answer here...">
+        <button onclick="checkAnswer('q3', 'done')">בדוק</button>
+        <div id="r3" class="result"></div>
+      </div>
+    </section>
+
+    <section id="theory" class="section">
+      <h2>הסברים וחומר תיאורטי</h2>
+      <p><strong>Present Simple:</strong> משמש לתיאור פעולות קבועות והרגלים. לדוגמה: "He walks to school."</p>
+      <p><strong>Present Progressive:</strong> משמש לתיאור פעולות שמתרחשות כעת. לדוגמה: "She is reading a book."</p>
+      <p><strong>Present Perfect:</strong> מתאר פעולות שהתרחשו בעבר אך יש להן השפעה על ההווה. לדוגמה: "I have eaten breakfast."</p>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2025 GrammarBoost - כל הזכויות שמורות
+  </footer>
+
+  <script>
+    function checkAnswer(inputId, correctAnswer) {
+      const userAnswer = document.getElementById(inputId).value.trim().toLowerCase();
+      const resultDiv = document.getElementById('r' + inputId.slice(-1));
+
+      if (userAnswer === correctAnswer.toLowerCase()) {
+        resultDiv.style.color = 'green';
+        resultDiv.textContent = 'תשובה נכונה!';
+      } else {
+        resultDiv.style.color = 'red';
+        resultDiv.textContent = 'לא נכון. התשובה הנכונה היא: ' + correctAnswer;
+      }
+    }
+  </script>
+</body>
+</html>
